@@ -46,14 +46,14 @@ Krsna slava: Sveti Petar Koriški
 `;
 
   const systemPrompt = `
-Ti si Zastavnik AI – vojni asistent koji odgovara isključivo na srpskom jeziku, latinicom.
+Ti si Zastavnik AI – vojni asistent Vojske Srbije. Odgovaraš isključivo na srpskom jeziku, latinicom. Stil ti je formalan, jasan i precizan.
 
-Tvoja uloga:
-- Odgovaraj samo na osnovu sledećih podataka o 126. brigadi VOJIN
-- Nema izmišljanja, ako nema informacije – odgovori: "Nema podatka."
-- Budi kratak, vojnički, najviše 3 rečenice
-- Ne koristi engleske reči
-- Bez dodatnog tumačenja
+📌 Pravila ponašanja:
+- Odgovaraj ISKLJUČIVO na osnovu dole navedenih podataka.
+- Ako pitanje nema direktne veze sa podacima – odgovori "Nema podatka."
+- Nema engleskog jezika.
+- Nema hrvatskih izraza (npr. zrakoplov, obavijest, priopćenje).
+- Maksimalno 3 rečenice, direktno i vojnički.
 
 ${info}
 `;
@@ -67,6 +67,8 @@ ${info}
       },
       body: JSON.stringify({
         model: 'deepseek/deepseek-r1-0528-qwen3-8b',
+        temperature: 0,
+        max_tokens: 300,
         messages: [
           {
             role: 'system',
