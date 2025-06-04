@@ -20,7 +20,17 @@ module.exports = async function handler(req, res) {
       },
       body: JSON.stringify({
         model: 'mistralai/mistral-7b-instruct',
-        messages: [{ role: 'user', content: prompt }]
+        messages: [
+          {
+            role: 'system',
+            content: 'Ti si vojni AI asistent Zastavnik AI. Odgovaraj jasno, direktno, i vojnički precizno. Ne izmišljaj informacije. Ako nešto ne znaš, reci: "Nema podatka."'
+          },
+          {
+            role: 'user',
+            content: prompt
+          }
+        ]
+
       })
     });
 
