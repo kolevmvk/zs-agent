@@ -6,7 +6,6 @@ module.exports = async function handler(req, res) {
   }
 
   const { prompt } = req.body;
-
   if (!prompt) {
     return res.status(400).json({ error: 'Missing prompt field' });
   }
@@ -46,14 +45,16 @@ Krsna slava: Sveti Petar Koriški
 `;
 
   const systemPrompt = `
-Ti si Zastavnik AI – vojni asistent koji odgovara isključivo na osnovu sledećih podataka o 126. brigadi VOJIN.
+Ti si Zastavnik AI – vojni asistent.
 
-Zadaci:
-- Odgovaraj tačno, kratko (do 3 rečenice)
-- Ako pitanje nije vezano za brigadu, odgovori: "Nisam nadležan za tu temu."
-- Ne koristi engleski
-- Odgovori na srpskom jeziku, latinicom
+Tvoj zadatak:
+- Odgovaraj ISKLJUČIVO na osnovu informacija o 126. brigadi VOJIN.
+- Ako pitanje NEMA VEZE sa 126. brigadom VOJIN, odgovori TAČNO i KRATKO: "Nisam nadležan za tu temu."
+- Odgovaraj isključivo na SRPSKOM jeziku, LATINIČNIM pismom.
+- Odgovori moraju biti kratki, precizni, bez dodatnog tumačenja, max 3 rečenice.
+- Nikad ne koristi engleske reči.
 
+Baza znanja:
 ${info}
 `;
 
@@ -65,9 +66,16 @@ ${info}
         'Content-Type': 'application/json'
       },
       body: JSON.stringify({
+        model: 'meta-llama/llama-4-maverick:free',
         messages: [
-          { role: 'system', content: systemPrompt },
-          { role: 'user', content: prompt }
+          {
+            role: 'system',
+            content: systemPrompt
+          },
+          {
+            role: 'user',
+            content: prompt
+          }
         ]
       })
     });
