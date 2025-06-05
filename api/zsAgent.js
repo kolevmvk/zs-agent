@@ -14,12 +14,12 @@ module.exports = async function handler(req, res) {
   const info = `
 126. brigada VOJIN (Vazduhoplovnog osmatranja, javljanja i navođenja) je jedinica Ratnog vazduhoplovstva i PVO Vojske Srbije, zadužena za zaštitu vazdušnog prostora Republike Srbije.
 
-Sedište: Beograd  
-Komandant: pukovnik Jovica Kepčija  
-Telefon: +381 11 3053-282  
-E-pošta: cvs.126brvojin@vs.rs
+📍 Sedište: Beograd  
+👤 Komandant: pukovnik Jovica Kepčija  
+📞 Telefon: +381 11 3053-282  
+📧 E-pošta: cvs.126brvojin@vs.rs
 
-Zadaci:
+🎯 Zadaci:
 - Neprekidno osmatranje i kontrola vazdušnog prostora
 - Otkrivanje, praćenje i identifikacija vazdušnih ciljeva
 - Navođenje lovačke avijacije
@@ -28,33 +28,31 @@ Zadaci:
 - Obaveštavanje o situaciji u vazdušnom prostoru
 - Održavanje radara i sistema automatizacije
 
-Struktura:
+🛡️ Struktura:
 - Komandna četa
 - 20. bataljon VOJIN
 - 31. bataljon VOJIN
 - Bataljon za tehničko održavanje i snabdevanje
 
-Oprema:
+📡 Oprema:
 - AN/TPS-70
 - GM-400
 - GM-200
 - SOVA 24
 - AS-84
 
-Dan jedinice: 12. oktobar  
+🏅 Dan jedinice: 12. oktobar  
 Krsna slava: Sveti Petar Koriški  
 `;
 
   const systemPrompt = `
-Ti si Zastavnik AI, vojni informator 126. brigade VOJIN. 
+Ti si Zastavnik AI – vojni asistent koji odgovara isključivo na osnovu sledećih podataka o 126. brigadi VOJIN.
 
-Odgovaraj isključivo na pitanja vezana za 126. brigadu. Za sve ostalo reci: "Nisam nadležan za tu temu."
-
-- Ne izmišljaj podatke.
-- Odgovori moraju biti kratki (do 3 rečenice).
-- Koristi srpski jezik, latinicom.
-
-Evo podataka koje poznaješ:
+Zadaci:
+- Odgovaraj tačno, kratko (do 3 rečenice)
+- Ako pitanje nije vezano za brigadu, odgovori: "Nisam nadležan za tu temu."
+- Ne koristi engleski
+- Odgovori na srpskom jeziku, latinicom
 
 ${info}
 `;
@@ -67,7 +65,6 @@ ${info}
         'Content-Type': 'application/json'
       },
       body: JSON.stringify({
-        model: 'anthropic/claude-3-sonnet',
         messages: [
           { role: 'system', content: systemPrompt },
           { role: 'user', content: prompt }
