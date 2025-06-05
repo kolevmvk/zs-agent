@@ -1,46 +1,84 @@
 const fetch = require('node-fetch');
 
-const BASE_INFO = {
-  "komandant": "Komandant 126. brigade VOJIN je pukovnik Jovica Kepčija.",
-  "sediste": "Sedište brigade je u Beogradu.",
-  "dan jedinice": "Dan jedinice je 12. oktobar.",
-  "krsna slava": "Krsna slava je Sveti Petar Koriški.",
-  "oprema": "Brigada koristi radare: AN/TPS-70, GM-400, GM-200, SOVA 24 i AS-84.",
-  "struktura": "Struktura: Komandna četa, 20. bataljon, 31. bataljon, i bataljon za tehničko održavanje.",
-  "zadaci": "Zadaci: osmatranje neba, praćenje ciljeva, navođenje aviona i PVO jedinica.",
-  "kontakt": "Telefon: +381 11 3053-282, Email: cvs.126brvojin@vs.rs."
-};
-
 module.exports = async function handler(req, res) {
   if (req.method !== 'POST') {
     return res.status(405).json({ error: 'Only POST allowed' });
   }
 
   const { prompt } = req.body;
+
   if (!prompt) {
     return res.status(400).json({ error: 'Missing prompt field' });
   }
 
-  const normalized = prompt.toLowerCase();
-  let responseText = "Nema podatka.";
+  const info = `
+126. brigada VOJIN je jedinica RV i PVO Vojske Srbije zadužena za nadzor i zaštitu vazdušnog prostora.
 
-  if (normalized.includes("komandant") || normalized.includes("ko vodi")) {
-    responseText = BASE_INFO["komandant"];
-  } else if (normalized.includes("sedište") || normalized.includes("sediste") || normalized.includes("gde se nalazi")) {
-    responseText = BASE_INFO["sediste"];
-  } else if (normalized.includes("dan jedinice") || normalized.includes("kad je dan")) {
-    responseText = BASE_INFO["dan jedinice"];
-  } else if (normalized.includes("krsna slava")) {
-    responseText = BASE_INFO["krsna slava"];
-  } else if (normalized.includes("radar") || normalized.includes("oprema")) {
-    responseText = BASE_INFO["oprema"];
-  } else if (normalized.includes("struktura") || normalized.includes("četa") || normalized.includes("ceta") || normalized.includes("bataljon")) {
-    responseText = BASE_INFO["struktura"];
-  } else if (normalized.includes("zadatak") || normalized.includes("šta radi") || normalized.includes("funkcija") || normalized.includes("zaduženje")) {
-    responseText = BASE_INFO["zadaci"];
-  } else if (normalized.includes("kontakt") || normalized.includes("telefon") || normalized.includes("email") || normalized.includes("mejl")) {
-    responseText = BASE_INFO["kontakt"];
+📍 Lokacija: Beograd  
+👤 Komandant: pukovnik Jovica Kepčija  
+📞 Kontakt: +381 11 3053-282  
+📧 Email: cvs.126brvojin@vs.rs  
+
+Zadaci:
+- Kontrola i osmatranje vazdušnog prostora
+- Praćenje i identifikacija ciljeva
+- Navođenje avijacije i PVO
+- Tehnička podrška i održavanje sistema
+
+Struktura:
+- Komandna četa
+- 20. i 31. bataljon VOJIN
+- Bataljon za tehničko održavanje
+
+Dan jedinice: 12. oktobar  
+Slava: Sveti Petar Koriški  
+`;
+
+  const systemPrompt = `
+Ti si VOJIN AI – zvanični digitalni asistent 126. brigade VOJIN.
+
+Tvoja pravila:
+- Odgovaraj ISKLJUČIVO na osnovu dole navedenih podataka.
+- Ako pitanje NIJE vezano za brigadu, odgovori: "Nisam nadležan za tu temu."
+- Ne izmišljaj, ne koristi spoljno znanje, ne prevodi.
+- Odgovori moraju biti kratki i jasni, kao u vojsci (najviše 3 rečenice).
+- Jezik: srpski, latinica.
+
+${info}
+`;
+
+  try {
+    const response = await fetch('https://openrouter.ai/api/v1/chat/completions', {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${process.env.OPENROUTER_API_KEY}`,
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        model: 'mistralai/mistral-7b-instruct',  // ili zameni sa 'deepseek/deepseek-coder:latest' po želji
+        messages: [
+          {
+            role: 'system',
+            content: systemPrompt
+          },
+          {
+            role: 'user',
+            content: prompt
+          }
+        ]
+      })
+    });
+
+    const data = await response.json();
+    const output = data.choices?.[0]?.message?.content;
+
+    if (!output) {
+      return res.status(500).json({ error: 'Empty response from AI' });
+    }
+
+    res.status(200).json({ output });
+  } catch (err) {
+    console.error('OpenRouter API error:', err);
+    res.status(500).json({ error: 'AI request failed' });
   }
-
-  res.status(200).json({ output: responseText });
 };
