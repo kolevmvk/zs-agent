@@ -1,22 +1,25 @@
 const fetch = require('node-fetch');
 
 module.exports = async function handler(req, res) {
-  // ✅ CORS zaglavlja za Web klijente
-  res.setHeader("Access-Control-Allow-Origin", "*");
-  res.setHeader("Access-Control-Allow-Methods", "POST, OPTIONS");
-  res.setHeader("Access-Control-Allow-Headers", "Content-Type");
+  // ✅ CORS headeri
+  res.setHeader('Access-Control-Allow-Origin', '*');
+  res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
+  res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
 
-  // ✅ Obrada preflight OPTIONS zahteva
-  if (req.method === "OPTIONS") {
-    res.statusCode = 204;
+  // ✅ CORS preflight OPTIONS – odgovori bez payloada
+  if (req.method === 'OPTIONS') {
+    res.writeHead(204);
     res.end();
     return;
   }
 
-  // ✅ Dozvoljen samo POST
   if (req.method !== 'POST') {
-    return res.status(405).json({ error: 'Only POST allowed' });
+    res.status(405).json({ error: 'Only POST allowed' });
+    return;
   }
+
+  // nastavlja se tvoj kod...
+
 
   const { prompt } = req.body;
 
