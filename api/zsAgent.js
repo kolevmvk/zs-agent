@@ -1,15 +1,19 @@
 const fetch = require('node-fetch');
 
 module.exports = async function handler(req, res) {
-  // CORS za Web klijente
+  // ✅ CORS zaglavlja za Web klijente
   res.setHeader("Access-Control-Allow-Origin", "*");
   res.setHeader("Access-Control-Allow-Methods", "POST, OPTIONS");
   res.setHeader("Access-Control-Allow-Headers", "Content-Type");
 
+  // ✅ Obrada preflight OPTIONS zahteva
   if (req.method === "OPTIONS") {
-    return res.status(200).end();
+    res.statusCode = 204;
+    res.end();
+    return;
   }
 
+  // ✅ Dozvoljen samo POST
   if (req.method !== 'POST') {
     return res.status(405).json({ error: 'Only POST allowed' });
   }
@@ -19,6 +23,7 @@ module.exports = async function handler(req, res) {
   if (!prompt) {
     return res.status(400).json({ error: 'Missing prompt field' });
   }
+
   const info = `
 126. brigada VOJIN (Vazduhoplovnog osmatranja, javljanja i navođenja) je jedinica Ratnog vazduhoplovstva i PVO Vojske Srbije, zadužena za zaštitu vazdušnog prostora Republike Srbije.
 
@@ -84,15 +89,15 @@ ${info}
     });
 
     const data = await response.json();
-    const output = data.choices?.[0]?.message?.content;
+    const output = data.choices?.[0]?.message?.content?.trim();
 
     if (!output) {
-      return res.status(500).json({ error: 'Empty response from AI' });
+      return res.status(500).json({ error: 'Ne mogu da odgovorim na to pitanje.' });
     }
 
     res.status(200).json({ output });
   } catch (err) {
     console.error('OpenRouter API error:', err);
-    res.status(500).json({ error: 'AI request failed' });
+    res.status(500).json({ error: 'Greška u komunikaciji sa AI servisom.' });
   }
 };
