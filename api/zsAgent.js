@@ -6,6 +6,7 @@ module.exports = async function handler(req, res) {
   }
 
   const { prompt } = req.body;
+
   if (!prompt) {
     return res.status(400).json({ error: 'Missing prompt field' });
   }
@@ -68,14 +69,8 @@ ${info}
       body: JSON.stringify({
         model: 'meta-llama/llama-4-maverick:free',
         messages: [
-          {
-            role: 'system',
-            content: systemPrompt
-          },
-          {
-            role: 'user',
-            content: prompt
-          }
+          { role: 'system', content: systemPrompt },
+          { role: 'user', content: prompt }
         ]
       })
     });
