@@ -1,25 +1,30 @@
 const fetch = require('node-fetch');
 
 module.exports = async function handler(req, res) {
-  // ✅ Uvek dodaj CORS header-e (i za OPTIONS i za POST)
+  // ✅ Setuj header-e ODMAH, bez uslova
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
   res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
 
-  // ✅ Ako je OPTIONS (preflight iz browsera), samo odgovori 200 OK
+  // ✅ Ako je preflight – završi odmah
   if (req.method === 'OPTIONS') {
-    res.status(200).end();
+    // ⚠️ NE koristi .status().end() jer može pojesti header-e → koristi writeHead
+    res.writeHead(200, {
+      'Access-Control-Allow-Origin': '*',
+      'Access-Control-Allow-Methods': 'POST, OPTIONS',
+      'Access-Control-Allow-Headers': 'Content-Type',
+    });
+    res.end();
     return;
   }
 
-  // ⛔ Ako NIJE POST – odbaci
   if (req.method !== 'POST') {
     res.status(405).json({ error: 'Only POST allowed' });
     return;
   }
 
-  // ✅ Parsiraj prompt iz zahteva
   const { prompt } = req.body;
+
 
   if (!prompt) {
     return res.status(400).json({ error: 'Missing prompt field' });
