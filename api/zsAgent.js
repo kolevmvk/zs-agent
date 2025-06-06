@@ -8,9 +8,12 @@ module.exports = async function handler(req, res) {
 
   // ✅ CORS preflight OPTIONS – odgovori bez payloada
   if (req.method === 'OPTIONS') {
-    res.writeHead(204);
+    res.status(204).setHeader('Access-Control-Allow-Origin', '*');
+    res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
+    res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
     res.end();
     return;
+
   }
 
   if (req.method !== 'POST') {
