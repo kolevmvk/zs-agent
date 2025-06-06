@@ -78,6 +78,13 @@ Baza znanja:
 ${info}
 `;
 
+  // ✅ Logovanje da vidiš da li poziv dolazi iz terminala ili iz APK-a
+  console.log('⬅️ PRIMLJEN ZAHTEV OD KLIJENTA');
+  console.log('PROMPT:', prompt);
+  console.log('MODEL:', 'meta-llama/llama-4-maverick');
+  console.log('USER-AGENT:', req.headers['user-agent']);
+  console.log('IP:', req.headers['x-forwarded-for'] || req.socket.remoteAddress);
+
   try {
     const response = await fetch('https://openrouter.ai/api/v1/chat/completions', {
       method: 'POST',
