@@ -1,29 +1,24 @@
 const fetch = require('node-fetch');
 
 module.exports = async function handler(req, res) {
-  // ✅ CORS headeri
+  // ✅ Uvek dodaj CORS header-e (i za OPTIONS i za POST)
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
   res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
 
-  // ✅ CORS preflight OPTIONS – odgovori bez payloada
+  // ✅ Ako je OPTIONS (preflight iz browsera), samo odgovori 200 OK
   if (req.method === 'OPTIONS') {
-    res.status(204).setHeader('Access-Control-Allow-Origin', '*');
-    res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
-    res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
-    res.end();
+    res.status(200).end();
     return;
-
   }
 
+  // ⛔ Ako NIJE POST – odbaci
   if (req.method !== 'POST') {
     res.status(405).json({ error: 'Only POST allowed' });
     return;
   }
 
-  // nastavlja se tvoj kod...
-
-
+  // ✅ Parsiraj prompt iz zahteva
   const { prompt } = req.body;
 
   if (!prompt) {
