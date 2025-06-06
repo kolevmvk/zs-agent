@@ -1,14 +1,13 @@
-const fetch = require('node-fetch');
+import fetch from 'node-fetch';
 
-module.exports = async function handler(req, res) {
-  // ✅ Setuj header-e ODMAH, bez uslova
+export default async function handler(req, res) {
+  // ✅ CORS headeri – obavezno za sve zahteve
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
   res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
 
-  // ✅ Ako je preflight – završi odmah
+  // ✅ Preflight (OPTIONS) – odgovori odmah
   if (req.method === 'OPTIONS') {
-    // ⚠️ NE koristi .status().end() jer može pojesti header-e → koristi writeHead
     res.writeHead(200, {
       'Access-Control-Allow-Origin': '*',
       'Access-Control-Allow-Methods': 'POST, OPTIONS',
@@ -18,13 +17,14 @@ module.exports = async function handler(req, res) {
     return;
   }
 
+  // ⛔ Ako nije POST – greška
   if (req.method !== 'POST') {
     res.status(405).json({ error: 'Only POST allowed' });
     return;
   }
 
+  // ✅ Parsiranje prompta
   const { prompt } = req.body;
-
 
   if (!prompt) {
     return res.status(400).json({ error: 'Missing prompt field' });
@@ -106,4 +106,4 @@ ${info}
     console.error('OpenRouter API error:', err);
     res.status(500).json({ error: 'Greška u komunikaciji sa AI servisom.' });
   }
-};
+}
