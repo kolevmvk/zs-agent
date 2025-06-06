@@ -93,7 +93,7 @@ ${info}
         'Content-Type': 'application/json'
       },
       body: JSON.stringify({
-        model: 'meta-llama/llama-4-maverick',
+        model: 'meta-llama/llama-4-maverick:free',
         messages: [
           { role: 'system', content: systemPrompt },
           { role: 'user', content: prompt }
