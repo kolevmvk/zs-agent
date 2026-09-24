@@ -1,0 +1,45 @@
+# Declared status, not verified release readiness.
+# stage: prototype is provisional: no formal lifecycle stage is declared.
+# Empty modules/risks/debt lists mean no supported entries recorded, not absence.
+# updated.at_commit references inspected HEAD before the status commit; approved template convention.
+schema_version: 1
+project:
+  id: zs-agent
+  name: ZS Agent
+  repo: kolevmvk/zs-agent
+  kind: api
+  stage: prototype
+updated:
+  at: "2026-09-24T11:35:26Z"
+  by: codex
+  at_commit: "7f04b53aff88f2fccf39482dc76523cec0de1f67"
+summary: Node.js serverless API repository with api/zsAgent.cjs, node-fetch dependency and Vercel configuration.
+  Latest commit changes the model selection. The package test script is an explicit no-test placeholder
+  that exits with an error; it is not a working test suite.
+modules: []
+risks: []
+blockers: []
+technical_debt: []
+pending_verification:
+- id: V1
+  claim: The documented checks or repository-specific acceptance review have been completed.
+  module: null
+  how: Exercise the API handler with authorized test configuration; verify validation and provider error
+    handling. A real automated test suite must be supplied before npm test can represent a passing check.
+  status: not_run
+  evidence: null
+next_actions: []
+release:
+  target_version: null
+  checklist:
+  - id: RC1
+    title: Release acceptance and intended deployment or repository handoff verified by the owner.
+    status: not_run
+    evidence: null
+agents:
+  last_session:
+    agent: codex
+    at: "2026-09-24T11:35:26Z"
+    summary: Added a source-grounded Control Center status snapshot. Functional and release checks were
+      not run.
+    commits: 1
